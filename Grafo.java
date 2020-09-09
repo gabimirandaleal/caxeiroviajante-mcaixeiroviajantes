@@ -52,7 +52,7 @@ public class Grafo {
 				i++;
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// TODO Auto-generated catch block 13914.812622070312
 			e.printStackTrace();
 		}
 	}
@@ -89,7 +89,7 @@ public class Grafo {
 //		System.out.println(resultado);
 	}
 
-	public float CaixeiroViajante() {
+	public double CaixeiroViajante() {
 		verifica = new float[grafosArray.size()];
 		int menorVertice = 0;
 		float distancia = 0;
@@ -98,20 +98,30 @@ public class Grafo {
 		for (int i = 0; i < grafosArray.size(); i++) {
 			if (i < grafosArray.size() - 1) {
 				menorVertice = retornarMenorValor(grafosArray.get(vertice), vertice);
-				System.out.println(menorVertice+" kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+				System.out.println(grafosArray.get(vertice).matrizDijkstra[menorVertice][0]+" Vertice: "+vertice + " Menor vértice: "+menorVertice);
+				System.out.println("Sem soma: "+distancia);
 				verifica[menorVertice]=-1;
 				distancia += grafosArray.get(vertice).matrizDijkstra[menorVertice][0];
+				System.out.println("Com soma: "+distancia);
 				
 			} else {
-				distancia += grafosArray.get(grafosArray.size() - 1).matrizDijkstra[0][0];
+			
+				System.out.println(grafosArray.get(vertice).matrizDijkstra[0][0]+"kkkkkkkkkkkkkkkkkkkkkkkkkx");
+				System.out.println(distancia);
+				distancia += grafosArray.get(vertice).matrizDijkstra[0][0];
+				System.out.println(distancia);
 			}
 			System.out.println("\nGrafo: "+ vertice);
 			for (int j = 0; j < grafosArray.get(vertice).matrizDijkstra.length; j++) {
 				System.out.print("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][0] + " ");
 				System.out.println("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][1] + " ");
 			}
+			System.out.println(distancia+ " i: "+i);
+//			Scanner input = new Scanner(System.in);
+//			String pausa = input.next();
 			vertice = menorVertice;
 		}
+			//24717.203 || 143327.75
 		return distancia;
 	}
 
