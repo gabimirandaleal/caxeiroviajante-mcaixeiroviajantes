@@ -9,10 +9,8 @@ import java.util.regex.Pattern;
 public class Grafo {
 
 	ArrayList<Vertice> v = new ArrayList();
-	int valorV;
 	float matrizDijkstra[][];
 	float verifica[];
-	ArrayList<Vertice> ordemTopologica = new ArrayList();
 	ArrayList<String> acumula = new ArrayList();
 	ArrayList<Vertice> listaIdsVisitados = new ArrayList();
 	ArrayList<Grafo> grafosArray = new ArrayList();
@@ -26,22 +24,6 @@ public class Grafo {
 		Aresta a1 = new Aresta(v2, peso);
 		v1.arestas.add(a1);
 		v1.nVizinhos++;
-	}
-
-	public void mostrarGrafo(Vertice v1) {
-
-		if (v1.isVisitado == false) {
-			v1.isVisitado = true;
-			valorV++;
-			v1.tempoVisita = valorV;
-			for (int j = 0; j < v1.arestas.size(); j++) {
-				mostrarGrafo(v1.arestas.get(j).vizinho);
-			}
-			valorV++;
-			v1.tempoPreto = valorV;
-			ordemTopologica.add(0, v1);
-		}
-
 	}
 
 	public void CarregarArquivo() {
@@ -108,11 +90,7 @@ public class Grafo {
 			} else {
 				distancia += grafosArray.get(vertice).matrizDijkstra[0][0];
 			}
-//			System.out.println("\nGrafo: "+ vertice);
-//			for (int j = 0; j < grafosArray.get(vertice).matrizDijkstra.length; j++) {
-//				System.out.print("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][0] + " ");
-//				System.out.println("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][1] + " ");
-//			}
+
 			vertice = menorVertice;
 		}
 		return distancia;
@@ -196,16 +174,7 @@ public class Grafo {
 		return vertice;
 	}
 
-	public float atribuirValor(Grafo grafo) {
-		float resul = 0;
-		for (int i = 0; i < grafo.matrizDijkstra.length; i++) {
-			if (grafo.matrizDijkstra[i][0] != 0.0 && verifica[i] != -1) {
-				resul = grafo.matrizDijkstra[i][0];
-				return resul;
-			}
-		}
-		return resul;
-	}
+
 
 	public boolean verificarId(int id) {
 		for (int i = 0; i < listaIdsVisitados.size(); i++) {
@@ -286,7 +255,7 @@ public class Grafo {
 			grafo.grafosArray.get(i).CriarGrafo(grafo.grafosArray.get(i));
 			grafo.grafosArray.get(i).matrizDijkstra = new float[grafo.grafosArray.get(i).v.size()][2];
 			grafo.grafosArray.get(i).dijkstra(grafo.grafosArray.get(i), grafo.grafosArray.get(i).v.get(i));
-			grafo.qntCaixeiros = 3;
+			grafo.qntCaixeiros = 1;
 			grafo.precoDiaria=150;
 			grafo.qntKmPorDia=600;
 //			System.out.println("\nGrafo "+ i);
