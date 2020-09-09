@@ -16,6 +16,11 @@ public class Grafo {
 	ArrayList<String> acumula = new ArrayList();
 	ArrayList<Vertice> listaIdsVisitados = new ArrayList();
 	ArrayList<Grafo> grafosArray = new ArrayList();
+	int qntCaixeiros;
+	int[] qntCidadesPorCaixeiro;
+	float[] distanciaPorCaixeiro;
+	int qntKmPorDia;
+	int precoDiaria;
 
 	public void ligaVertices(Vertice v1, Vertice v2, float peso) {
 		Aresta a1 = new Aresta(v2, peso);
@@ -42,7 +47,7 @@ public class Grafo {
 	public void CarregarArquivo() {
 		try {
 			Scanner in = new Scanner(
-					new FileReader("C:\\Users\\gabri\\eclipse-workspace\\Grafo\\src\\grafo\\ncit30.txt"));
+					new FileReader("C:\\Users\\gabri\\eclipse-workspace\\Grafo\\src\\grafo\\ncit100.txt"));
 
 			int i = 0;
 			while (in.hasNextLine()) {
@@ -94,36 +99,86 @@ public class Grafo {
 		int menorVertice = 0;
 		float distancia = 0;
 		int vertice = 0;
-		verifica[menorVertice] = -1;	
+		verifica[menorVertice] = -1;
 		for (int i = 0; i < grafosArray.size(); i++) {
 			if (i < grafosArray.size() - 1) {
 				menorVertice = retornarMenorValor(grafosArray.get(vertice), vertice);
-				System.out.println(grafosArray.get(vertice).matrizDijkstra[menorVertice][0]+" Vertice: "+vertice + " Menor vértice: "+menorVertice);
-				System.out.println("Sem soma: "+distancia);
-				verifica[menorVertice]=-1;
+				verifica[menorVertice] = -1;
 				distancia += grafosArray.get(vertice).matrizDijkstra[menorVertice][0];
-				System.out.println("Com soma: "+distancia);
-				
 			} else {
-			
-				System.out.println(grafosArray.get(vertice).matrizDijkstra[0][0]+"kkkkkkkkkkkkkkkkkkkkkkkkkx");
-				System.out.println(distancia);
 				distancia += grafosArray.get(vertice).matrizDijkstra[0][0];
-				System.out.println(distancia);
 			}
-			System.out.println("\nGrafo: "+ vertice);
-			for (int j = 0; j < grafosArray.get(vertice).matrizDijkstra.length; j++) {
-				System.out.print("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][0] + " ");
-				System.out.println("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][1] + " ");
-			}
-			System.out.println(distancia+ " i: "+i);
-//			Scanner input = new Scanner(System.in);
-//			String pausa = input.next();
+//			System.out.println("\nGrafo: "+ vertice);
+//			for (int j = 0; j < grafosArray.get(vertice).matrizDijkstra.length; j++) {
+//				System.out.print("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][0] + " ");
+//				System.out.println("Matriz[" + j + "] = " + grafosArray.get(vertice).matrizDijkstra[j][1] + " ");
+//			}
 			vertice = menorVertice;
 		}
-			//24717.203 || 143327.75
 		return distancia;
 	}
+
+	public void M_CaixeirosViajantes() {
+		verifica = new float[grafosArray.size()];
+		int menorVertice = 0;
+		float distancia = 0;
+		int vertice = 0;
+		verifica[menorVertice] = -1;
+		distanciaPorCaixeiro = new float[qntCaixeiros];
+		if (grafosArray.size() % qntCaixeiros == 0) {
+			qntCidadesPorCaixeiro = new int[qntCaixeiros];
+			for (int i = 0; i < qntCidadesPorCaixeiro.length; i++) {
+				qntCidadesPorCaixeiro[i] = grafosArray.size() / qntCaixeiros;
+			}
+		} else {
+			qntCidadesPorCaixeiro = new int[qntCaixeiros];
+			for (int i = 0; i < qntCidadesPorCaixeiro.length; i++) {
+				if (i < qntCidadesPorCaixeiro.length - 1) {
+					qntCidadesPorCaixeiro[i] = qntCidadesPorCaixeiro[i] = grafosArray.size() / qntCaixeiros;
+				} else {
+					qntCidadesPorCaixeiro[i] = (qntCidadesPorCaixeiro[i] = grafosArray.size() / qntCaixeiros) + 1;
+				}
+			}
+		}
+		for (int j = 0; j < qntCaixeiros; j++) {
+			vertice = 0;
+			for (int i = 0; i < qntCidadesPorCaixeiro[j]; i++) {
+				if (i < qntCidadesPorCaixeiro[j] - 1) {
+					menorVertice = retornarMenorValor(grafosArray.get(vertice), vertice);
+					verifica[menorVertice] = -1;
+					distanciaPorCaixeiro[j] += grafosArray.get(vertice).matrizDijkstra[menorVertice][0];
+				} else {
+					distanciaPorCaixeiro[j] += grafosArray.get(vertice).matrizDijkstra[0][0];
+				}
+//				System.out.println("\nGrafo: "+ vertice);
+//				for (int k = 0; k < grafosArray.get(vertice).matrizDijkstra.length; k++) {
+//					System.out.print("Matriz[" + k + "] = " + grafosArray.get(vertice).matrizDijkstra[k][0] + " ");
+//					System.out.println("Matriz[" + k + "] = " + grafosArray.get(vertice).matrizDijkstra[k][1] + " ");
+//				}
+				vertice = menorVertice;
+			}
+		}
+		for (int i = 0; i < distanciaPorCaixeiro.length; i++) {
+			System.out.println(distanciaPorCaixeiro[i]);
+		}
+		gerarRelatorio();
+	}
+	
+	public void gerarRelatorio() {
+		float custo = 0;
+		int diasInteiros = 0;
+		for (int i = 0; i < distanciaPorCaixeiro.length; i++) {
+			float dias = distanciaPorCaixeiro[i]/qntKmPorDia;
+			diasInteiros = (int) dias;
+			if(distanciaPorCaixeiro[i] - (qntKmPorDia*diasInteiros) == 0) {
+				custo+= dias*precoDiaria;
+			}else {
+				custo+= (diasInteiros+1)*precoDiaria;
+			}
+		}
+		System.out.println("Custo: "+custo);
+	}
+	 
 
 	public int retornarMenorValor(Grafo grafo, int id) {
 		float menorValor = 2147483647;
@@ -134,7 +189,7 @@ public class Grafo {
 					menorValor = grafo.matrizDijkstra[i][0];
 					vertice = i;
 				}
-			}else {
+			} else {
 				continue;
 			}
 		}
@@ -144,7 +199,7 @@ public class Grafo {
 	public float atribuirValor(Grafo grafo) {
 		float resul = 0;
 		for (int i = 0; i < grafo.matrizDijkstra.length; i++) {
-			if (grafo.matrizDijkstra[i][0] != 0.0 && verifica[i]!=-1) {
+			if (grafo.matrizDijkstra[i][0] != 0.0 && verifica[i] != -1) {
 				resul = grafo.matrizDijkstra[i][0];
 				return resul;
 			}
@@ -156,7 +211,7 @@ public class Grafo {
 		for (int i = 0; i < listaIdsVisitados.size(); i++) {
 			if (listaIdsVisitados.get(i).id == id) {
 				return true;
-			}else {
+			} else {
 				continue;
 			}
 		}
@@ -231,13 +286,16 @@ public class Grafo {
 			grafo.grafosArray.get(i).CriarGrafo(grafo.grafosArray.get(i));
 			grafo.grafosArray.get(i).matrizDijkstra = new float[grafo.grafosArray.get(i).v.size()][2];
 			grafo.grafosArray.get(i).dijkstra(grafo.grafosArray.get(i), grafo.grafosArray.get(i).v.get(i));
+			grafo.qntCaixeiros = 3;
+			grafo.precoDiaria=150;
+			grafo.qntKmPorDia=600;
 //			System.out.println("\nGrafo "+ i);
 //			for (int j = 0; j < grafo.grafosArray.get(i).matrizDijkstra.length; j++) {
 //				System.out.print("Matriz[" + j + "] = " + grafo.grafosArray.get(i).matrizDijkstra[j][0] + " ");
 //				System.out.println("Matriz[" + j + "] = " + grafo.grafosArray.get(i).matrizDijkstra[j][1] + " ");
 //			}
 		}
-		System.out.println(grafo.CaixeiroViajante());
+		grafo.M_CaixeirosViajantes();
 
 	}
 }
