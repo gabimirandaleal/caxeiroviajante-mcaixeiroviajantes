@@ -278,7 +278,7 @@ public class Grafo {
 			grafo.grafosArray.get(i).CriarGrafo(grafo.grafosArray.get(i));
 			grafo.grafosArray.get(i).matrizDijkstra = new float[grafo.grafosArray.get(i).v.size()][2];
 			grafo.grafosArray.get(i).dijkstra(grafo.grafosArray.get(i), grafo.grafosArray.get(i).v.get(i));
-			grafo.qntCaixeiros = 3;
+			grafo.qntCaixeiros = 1;
 			grafo.precoDiaria = 150;
 			grafo.qntKmPorDia = 600;
 //			System.out.println("\nGrafo "+ i);
